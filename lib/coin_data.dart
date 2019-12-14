@@ -35,12 +35,15 @@ const bitcoinAverageURL =
     'https://apiv2.bitcoinaverage.com/indices/global/ticker';
 
 class CoinData {
-  dynamic getCoinData(symbol) async {
-    String tickerDataPerSymbol = bitcoinAverageURL + '/$symbol';
+  Future getCoinData(crypto, currency) async {
+    String tickerDataPerSymbol = bitcoinAverageURL + '/$crypto$currency';
     var response = await http.get(tickerDataPerSymbol);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       return jsonResponse['last'];
+    } else {
+      print(response.statusCode);
+      throw 'Problem with the GET request';
     }
   }
 }

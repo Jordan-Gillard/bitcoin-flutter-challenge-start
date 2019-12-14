@@ -10,6 +10,7 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
+  String bitcoinValueInUSD = '?';
 
   DropdownButton<String> androidDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
@@ -48,16 +49,18 @@ class _PriceScreenState extends State<PriceScreen> {
     );
   }
 
-  String getData(symbol) {
+  void getData(String crypto, String currency) async {
     CoinData coinData = CoinData();
-    return coinData.getCoinData(symbol);
+    double newPrice = await coinData.getCoinData(crypto, currency);
+    setState(() {
+      bitcoinValueInUSD = newPrice.toStringAsFixed(0);
+    });
   }
-
 
   @override
   void initState() {
     super.initState();
-    //TODO: Call getData() when the screen loads up.
+    getData('BTC', selectedCurrency);
   }
 
   @override
@@ -81,8 +84,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  //TODO: Update the Text Widget with the live bitcoin data here.
-                  '1 BTC = ? USD',
+                  '$selectedCurrency = $bitcoinValueInUSD USD',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
